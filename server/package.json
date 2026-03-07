@@ -6,7 +6,7 @@
   "scripts": {
     "test": "tsx server.ts",
     "build": "npm install && npx prisma generate && tsc",
-    "start": "node dist/server.js"
+    "start": "tsx server.ts"
   },
   "keywords": [],
   "author": "",
