@@ -5,8 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "test": "tsx server.ts",
-    "build": "npm install && npx prisma generate",
-    "start": "tsx server.ts"
+    "build": "npm install && npx prisma generate && tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
