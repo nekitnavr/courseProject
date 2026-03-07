@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/esm/Button';
 import Form from 'react-bootstrap/Form'
 import { useForm } from 'react-hook-form';
 import axiosInstance from '../api/axiosConfig';
-import RenderInput from '../lib/renderInput';
+import RenderInput from '../lib/renderInput.jsx';
 import { mapFieldValues } from '../lib/helpers.js';
 
 function AddItemsForm({inventory, fillItems}) {
