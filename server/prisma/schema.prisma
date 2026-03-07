@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
+  previewFeatures = ["fullTextSearchPostgres"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                    Int         @id @default(autoincrement())
+  name                  String
+  email                 String      @unique
+  password              String
+  role                  Role        @default(USER)
+  inventories           Inventory[]
+  accessibleInventories Inventory[] @relation("InventoryAccess")
+  blocked               Boolean     @default(false)
+
+  //there is a GIN index on name and email
+}
+
+model Inventory {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  accessType  AccessType @default(PUBLIC)
+  creatorId   Int
+  creator     User       @relation(fields: [creatorId], references: [id])
+  createdAt   DateTime   @default(now())
+
+  customItemId         IdConfig?
+  customItemIdSequence Int       @default(0)
+
+  categoryId      Int
+  category        Category @relation(fields: [categoryId], references: [id])
+  tags            Tag[]
+  usersWithAccess User[]   @relation("InventoryAccess")
+  fields          Field[]
+  items           Item[]
+}
+
+model IdConfig {
+  id          String      @id @default(cuid())
+  inventoryId String      @unique
+  inventory   Inventory   @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  idElements  IdElement[]
+  separator   String?     @default("")
+}
+
+model IdElement {
+  id            Int           @id @default(autoincrement())
+  idConfigId    String
+  idConfig      IdConfig      @relation(fields: [idConfigId], references: [id], onDelete: Cascade)
+  idElementType IdElementType
+  fixedText     String?
+}
+
+enum IdElementType {
+  TEXT
+  RANDOM_20_BIT
+  RANDOM_32_BIT
+  RANDOM_6_DIGIT
+  RANDOM_9_DIGIT
+  GUID
+  DATE
+  SEQUENCE
+}
+
+model Field {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  display     Boolean
+  fieldType   FieldType
+  order       Int       @default(0)
+  slotNumber  Int
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  @@unique([inventoryId, order])
+  @@unique([inventoryId, fieldType, slotNumber])
+  @@index([inventoryId, id])
+}
+
+model Item {
+  id       String  @id @default(cuid())
+  customId String?
+
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  singleLine1 String?
+  singleLine2 String?
+  singleLine3 String?
+
+  multiLine1 String?
+  multiLine2 String?
+  multiLine3 String?
+
+  numeric1 Int?
+  numeric2 Int?
+  numeric3 Int?
+
+  bool1 Boolean? @default(false)
+  bool2 Boolean? @default(false)
+  bool3 Boolean? @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@unique([inventoryId, customId])
+}
+
+model Category {
+  id           Int         @id @default(autoincrement())
+  categoryName String      @unique
+  inventories  Inventory[]
+}
+
+model Tag {
+  id          Int         @id @default(autoincrement())
+  tagName     String      @unique
+  inventories Inventory[]
+}
+
+enum FieldType {
+  SINGLE_LINE
+  MULTI_LINE
+  BOOL
+  NUMERIC
+}
+
+enum AccessType {
+  PUBLIC
+  PRIVATE
+}
+
+enum Role {
+  USER
+  ADMIN
+}

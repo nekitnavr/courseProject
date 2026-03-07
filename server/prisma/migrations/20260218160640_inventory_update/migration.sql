@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Inventory" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "customId" TEXT;

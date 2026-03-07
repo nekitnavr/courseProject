@@ -1,0 +1,6 @@
+{
+    "watch": ["server/server.ts", "server/routes/*.ts", "server/config/*.ts", "server/middleware/*.ts"],
+    "ignore": ["client"],
+    "ext": "ts",
+    "exec": "npx tsx server.ts"
+}

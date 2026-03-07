@@ -1,0 +1,7 @@
+.form-label.required:after {
+  content:" *";
+  color:red;
+}
+.firstcap::first-letter{
+  text-transform: capitalize;
+}
