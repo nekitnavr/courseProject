@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from 'react-bootstrap/Modal'
-import RenderInput from '../lib/renderInput';
+import RenderInput from '../lib/RenderInput';
 import {useForm} from 'react-hook-form'
 import Button from "react-bootstrap/esm/Button";
 import Form from 'react-bootstrap/Form'
