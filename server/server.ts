@@ -26,8 +26,8 @@ app.use(cookieParser())
 app.use(passport.initialize())
 
 app.use(publicRouter)
-app.use(isAuthenticated)
 app.use(authRouter)
+app.use(isAuthenticated)
 app.use(inventoryRouter)
 app.use(adminRouter)
 
