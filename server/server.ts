@@ -27,7 +27,7 @@ app.use(passport.initialize())
 
 app.use(publicRouter)
 app.use(authRouter)
-// app.use(isAuthenticated)
+app.use(isAuthenticated)
 app.use(inventoryRouter)
 app.use(adminRouter)
 
