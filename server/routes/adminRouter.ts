@@ -1,7 +1,10 @@
 import express from 'express'
 import {prisma} from '../lib/prisma.js'
+import { authorize } from '../middleware/authorize.js'
 
 const router = express.Router()
+
+router.use(authorize(['ADMIN']))
 
 router.patch('/api/users/delete', async (req,res)=>{
     try {

@@ -46,7 +46,7 @@ function User() {
     
     return ( <>
         <h2 className='mb-3'>{user?.email}'s Inventories</h2>
-        <Tabs defaultActiveKey="adminPage" className="mb-3">
+        <Tabs defaultActiveKey="inventories" className="mb-3">
             <Tab eventKey="inventories" title="Inventories">
                 {userInventories ? <InventoriesTable inventories={userInventories}></InventoriesTable> : <Spinner/>}
                 {userInventories?.length == 0 && <h2 className='mt-5'>Uesr doesn't have any inventories</h2>}

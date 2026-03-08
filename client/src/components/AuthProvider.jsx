@@ -15,27 +15,31 @@ export default function AuthProvider({children}) {
     //     console.log(user);
     // },[user])
 
-    useEffect(()=>{
-        // verifySession()
-    },[])
-
-    const verifySession = ()=>{
+    const updateSession = ()=>{
         if (!user) return
-        axiosInstance.get('/api/verifyToken').then(res=>{
-            setUser(res.data)
+        axiosInstance.get('/api/updateToken').then(res=>{
+            login(res.data)
         }).catch(err=>{
             setUser(null)
             localStorage.removeItem('user');
         })
     }
     
-    const handleUnauthorized = () => {
+    const handleUnauthenticated = () => {
         logout()
+    }
+    const handleUnauthorized = () => {
+        console.log('Unauthorized!');
+        updateSession()
     }
     
     useEffect(() => {
-        window.addEventListener('unauthorized', handleUnauthorized);
-        return () => window.removeEventListener('unauthorized', handleUnauthorized);
+        window.addEventListener('unauthenticated', handleUnauthenticated)
+        window.addEventListener('unauthorized', handleUnauthorized)
+        return () => {
+            window.removeEventListener('unauthenticated', handleUnauthenticated)
+            window.removeEventListener('unauthorized', handleUnauthorized)
+        }
     }, [])
 
     const login = (user)=>{
