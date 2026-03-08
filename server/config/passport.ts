@@ -50,7 +50,7 @@ passport.use(new JwtStrategy(
                 }
             })
             if (!user) return done(null, false, {message: `User doesn't exist`})
-            if (user.blocked) return done(null, false, {message: 'User blocked'})
+            if (user.blocked == true) return done(null, false, {message: 'User blocked'})
             const {password: discardedPassword, ...userWithoutPassword} = user
             return done(null, userWithoutPassword)
         } catch (error) {
