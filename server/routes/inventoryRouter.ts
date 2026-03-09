@@ -12,6 +12,23 @@ const router = express.Router()
 
 router.use(authorize(['USER', 'ADMIN']))
 
+router.get('/api/users', async (req,res)=>{
+    try {
+        let searchString = req.query.searchString as string
+        let userId = req.query.userId as string
+
+        const users = await prisma.$queryRaw`
+            SELECT name, email FROM "User" 
+            WHERE to_tsvector('english', name || ' ' || email) @@ websearch_to_tsquery('english', ${searchString}) 
+            AND id != ${userId}
+            LIMIT 5;
+        `
+        res.send(users)
+    } catch (error) {
+        console.log(error);
+        res.send(error)
+    }
+})
 router.get('/api/inventory/usersWithAccess', async (req, res)=>{
     const inventoryId = req.query.inventoryId as string
     try {
@@ -56,23 +73,6 @@ router.get('/api/user/accessibleInventories', async (req,res)=>{
         res.send(inventories?.accessibleInventories)
     }catch(err){
         res.send(err)
-    }
-})
-router.get('/api/users', async (req,res)=>{
-    try {
-        let searchString = req.query.searchString as string
-        let userId = req.query.userId as string
-
-        const users = await prisma.$queryRaw`
-            SELECT name, email FROM "User" 
-            WHERE to_tsvector('english', name || ' ' || email) @@ websearch_to_tsquery('english', ${searchString}) 
-            AND id != ${userId}
-            LIMIT 5;
-        `
-        res.send(users)
-    } catch (error) {
-        console.log(error);
-        res.send(error)
     }
 })
 router.patch('/api/inventory/removeAccess', async (req,res)=>{
@@ -311,12 +311,12 @@ router.patch('/api/inventory/settings', async (req, res)=>{
     }
 })
 router.delete('/api/inventory/deleteFields', async (req,res)=>{
-    let selectedFields = req.query['selectedFields[]'] as string[]
-    const inventoryId = req.query['inventoryId'] as string
-    if (!Array.isArray(selectedFields)) selectedFields = [selectedFields]
-    if (!inventoryId) return res.status(400).send('Inventory id required')
-    
     try {
+        let selectedFields = req.query['selectedFields[]'] as string[]
+        if (!Array.isArray(selectedFields)) selectedFields = [selectedFields]
+        const inventoryId = req.query['inventoryId'] as string
+        if (!inventoryId) return res.status(400).send('Inventory id required')
+
         await prisma.$transaction(async (tx)=>{
             const deleteData:any = {}
             for (let i = 0; i < selectedFields.length; i++) {
@@ -352,6 +352,22 @@ router.delete('/api/inventory/deleteFields', async (req,res)=>{
         res.status(400).send(error.message)
     }
     // const deleted = await prisma.item.deleteMany({where: {id: {in: selectedFields}}})
+})
+router.delete('/api/inventories', async (req,res)=>{
+    try {
+        let selectedInventories = req.query['selectedInventories[]'] as string[]
+        if (!Array.isArray(selectedInventories)) selectedInventories = [selectedInventories]
+        await prisma.inventory.deleteMany({
+            where: {
+                id: {
+                    in: selectedInventories
+                }
+            }
+        })
+        res.send('Inventories deleted')
+    } catch (error) {
+        res.send(error)
+    }
 })
 router.post('/api/createInventory', async (req, res)=>{
     const {

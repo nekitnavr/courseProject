@@ -22,7 +22,7 @@ createRoot(document.getElementById('root')).render(
           <AuthProvider>
             <Routes>
               <Route element={<MainLayout />}>
-                <Route index element={<Dashboard />} />
+                <Route index element={<Dashboard />}/>
                 <Route path='/user/:id' element={<User />} />
                 <Route path='/inventory/:id' element={<Inventory />} />
                 <Route path='/createInventory' element={<CreateInventory />} />

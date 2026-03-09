@@ -8,13 +8,13 @@ import useRowSelect from "../hooks/useRowSelect";
 import {Trash3} from 'react-bootstrap-icons'
 import Button from 'react-bootstrap/Button'
 import axiosInstance from '../api/axiosConfig';
-import Modal from 'react-bootstrap/Modal'
 import EditItemModal from "./EditItemModal";
 import {typeMap} from '../lib/helpers'
-
+import { useAlert } from "../hooks/useAlert";
 
 function ItemsTable({inventory, fillItems, accessLevel}) {
     const {user} = useAuth()
+    const {showAlert} = useAlert()
     
     const renderTooltip = (text) => (props) => (
         <Tooltip id="button-tooltip" {...props}>
@@ -37,10 +37,10 @@ function ItemsTable({inventory, fillItems, accessLevel}) {
                 params: {
                     selectedItems: getSelectedRows()
                 }
-            })
-            .then(res=>{
+            }).then(res=>{
                 if(fillItems) fillItems()
                 deselectAll()
+                showAlert('Items deleted')
             })
         }
     }
@@ -99,14 +99,16 @@ function ItemsTable({inventory, fillItems, accessLevel}) {
                 <tbody>
                     {inventory.items.map((item, index)=>(
                         <tr key={item.id} style={{cursor: accessLevel > 0 ? 'pointer' : 'auto'}} onClick={()=>openEditItemModal(item)}>
-                            {accessLevel > 0 && (<td>
-                                <input type="checkbox" 
-                                    name="checkRow"
-                                    onChange={(e)=>{toggleRow(item.id)}} 
-                                    checked={isSelected(item.id)}
-                                    onClick={(e)=>e.stopPropagation()}
-                                />
-                            </td>)}
+                            {accessLevel > 0 && (
+                                <td>
+                                    <input type="checkbox" 
+                                        name="checkRow"
+                                        onChange={(e)=>{toggleRow(item.id)}} 
+                                        checked={isSelected(item.id)}
+                                        onClick={(e)=>e.stopPropagation()}
+                                    />
+                                </td>
+                            )}
                             <td>{item.customId ? item.customId : item.id}</td>
                             {fieldsToRender?.map((field) => (
                                 <td key={field.id}>

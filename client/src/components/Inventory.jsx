@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import axiosInstance from "../api/axiosConfig";
 import ItemsTable from "./ItemsTable";
 import { useAuth } from "../hooks/useAuth";
@@ -70,7 +70,7 @@ function Inventory() {
 
     return ( <>
     {inventory && <h2 className="ps-1 mb-3">
-        {inventory.title} 
+        <Link to={`/user/${inventory.creatorId}`}>{inventory.title}</Link>
         {inventory.tags.map((el, i)=>(
             <Badge key={i} className="p-1 ms-2">{el.tagName}</Badge>
         ))}

@@ -39,19 +39,29 @@ function User() {
         fillAccessibleInventories()
         fillUser()
     }, [idFromParams])
+
+    const isOwner = currentUser?.id == idFromParams
     
     return ( <>
         <h2 className='mb-3'>{user?.email}'s Inventories</h2>
-        {currentUser?.id == idFromParams && <div className=' d-flex flex-row gap-3 justify-content-center mb-3'>
-            <Button variant='success' onClick={()=>nav('/createInventory')}>Create inventory</Button>
-            <Button onClick={logout} variant='danger'>Logout</Button>
-        </div>}
+        {isOwner && 
+            <div className=' d-flex flex-row gap-3 justify-content-center mb-3'>
+                <Button variant='success' onClick={()=>nav('/createInventory')}>Create inventory</Button>
+                <Button onClick={logout} variant='danger'>Logout</Button>
+            </div>
+        }
         <Tabs defaultActiveKey="inventories" className="mb-3">
             <Tab eventKey="inventories" title="Inventories">
-                {userInventories ? <InventoriesTable inventories={userInventories}></InventoriesTable> : <Spinner/>}
-                {userInventories?.length == 0 && <h2 className='mt-5'>Uesr doesn't have any inventories</h2>}
+                {userInventories ? 
+                    <InventoriesTable 
+                        inventories={userInventories} 
+                        editable={isOwner}
+                        fillInventories={fillInventories}
+                    /> : <Spinner/>
+                }
+                {userInventories?.length == 0 && <h2 className='mt-5'>User doesn't have any inventories</h2>}
             </Tab>
-            {currentUser?.id == idFromParams &&
+            {isOwner &&
                 <Tab eventKey="accessibleInventories" title="Accessible inventories">
                     {accessibleInventories ? <InventoriesTable inventories={accessibleInventories}></InventoriesTable> : <Spinner/>}
                     {accessibleInventories?.length == 0 && <h2 className='mt-5'>User hasn't been given access by anybody</h2>}

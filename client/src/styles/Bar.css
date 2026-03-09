@@ -1,0 +1,13 @@
+a{
+    text-decoration: none;
+}
+a.light{
+    color: black;
+}
+a.dark{
+    color: white;
+}
+a.active{
+    font-weight: bold;
+    color: #3d8bfd;
+}

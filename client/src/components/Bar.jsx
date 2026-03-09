@@ -1,12 +1,13 @@
+import '../styles/Bar.css'
 import Navbar from 'react-bootstrap/Navbar'
 import Form from 'react-bootstrap/Form'
-import { NavLink } from 'react-router';
 import Nav from 'react-bootstrap/Nav'
 import { useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import Button from 'react-bootstrap/esm/Button';
 import { useTheme } from '../hooks/useTheme';
 import FormCheckInput from 'react-bootstrap/esm/FormCheckInput';
+import { NavLink } from 'react-router';
 
 function Bar() {
     const {user, logout} = useAuth()
@@ -15,7 +16,7 @@ function Bar() {
     return ( <>
     <Navbar className="bg-body-tertiary d-flex flex-row ps-4 pe-4 mb-4 justify-content-between gap-2">
         <div className='d-flex flex-row gap-3'>
-            <Nav.Link as={NavLink} to="/">Browse</Nav.Link>
+            <NavLink as={NavLink} to="/" className={`${theme}`}>Browse</NavLink>
         </div>
         <div className=' d-flex flex-row gap-3 align-items-center'>
             {/* <Button onClick={toggleTheme}>Toggle theme</Button> */}
@@ -23,10 +24,9 @@ function Bar() {
             
             {user ? (
                 <>
-                    
-                    <Nav.Link as={NavLink} to={`/user/${user.id}`} >{user.email}</Nav.Link>
+                    <NavLink as={NavLink} to={`/user/${user.id}`} className={`${theme}`}>{user.email}</NavLink>
                 </>
-            ) : <Nav.Link as={NavLink} to="/login" className='ms-auto'>Login</Nav.Link>}
+            ) : <NavLink as={NavLink} to="/login" className={`ms-auto`}>Login</NavLink>}
         </div>
     </Navbar> 
     </> );
