@@ -1,36 +1,12 @@
 import Form from 'react-bootstrap/Form'
 import { useFieldArray, useForm } from 'react-hook-form';
 import Button from 'react-bootstrap/esm/Button';
-import random from 'random'
 import { useEffect } from 'react';
 import axiosInstance from '../api/axiosConfig';
+import { exampleID } from '../lib/helpers';
+import { useAlert } from '../hooks/useAlert'
 
-const exampleID = (idElements, separator = '') => {
-    return idElements.map(el => {
-        switch (el.idElementType) {
-            case 'TEXT':
-                return el.fixedText
-            case 'RANDOM_20_BIT':
-                return random.int(0, 1048575)
-            case 'RANDOM_32_BIT':
-                return random.int(0, 4294967295)
-            case 'RANDOM_6_DIGIT':
-                return random.int(100000, 999999)
-            case 'RANDOM_9_DIGIT':
-                return random.int(100000000, 999999999)
-            case 'GUID':
-                return crypto.randomUUID()
-            case 'DATE':
-                return new Date().toISOString()
-            case 'SEQUENCE':
-                return 0
-            default:
-                return ''
-        }
-    }).filter(el => el !== '').join(separator);
-}
-
-function AddCustomIdForm({setValue: setOuterFormValue, customId, inventoryId}) {
+function AddCustomIdForm({ setValue: setOuterFormValue, customId, inventoryId }) {
     const { control, register, watch, reset, setValue, handleSubmit } = useForm({
         defaultValues: {
             idElements: customId?.idElements || [],
@@ -38,13 +14,23 @@ function AddCustomIdForm({setValue: setOuterFormValue, customId, inventoryId}) {
         }
     })
     const { fields, append, remove } = useFieldArray({ control, name: 'idElements' })
+    const { showAlert } = useAlert()
 
     const idElements = watch('idElements')
     const form = watch()
 
     useEffect(() => {
-        if(setOuterFormValue) setOuterFormValue('customItemId', form)
+        if (setOuterFormValue) setOuterFormValue('customItemId', form)
     }, [form])
+
+    useEffect(() => {
+        if (customId) {
+            reset({
+                idElements: customId.idElements || [],
+                separator: customId.separator || ''
+            })
+        }
+    }, [customId]);
 
     const addElement = () => {
         if (idElements[0] && idElements[idElements.length - 1].idElementType == '') {
@@ -54,17 +40,16 @@ function AddCustomIdForm({setValue: setOuterFormValue, customId, inventoryId}) {
         }
     }
 
-    const onSubmit = async (data)=>{
-        // console.log(data);
+    const onSubmit = async (data) => {
         axiosInstance.patch('/api/inventory/updateCustomId', {
             configId: customId?.id,
             idElements: data.idElements,
             separator: data.separator,
             inventoryId: inventoryId
-        }).then(res=>{
-            console.log(res.data)
-        }).catch(err=>{
-            console.log(err)
+        }).then(res => {
+            showAlert(res.data)
+        }).catch(err => {
+            showAlert('Error updating customID', 'danger', 2000)
         })
     }
 
@@ -83,7 +68,7 @@ function AddCustomIdForm({setValue: setOuterFormValue, customId, inventoryId}) {
             {fields.map((field, index) => (
                 <Form.Group className='mb-3 d-flex gap-3' key={field.id}>
                     <Form.Select
-                        {...register(`idElements.${index}.idElementType`, {required: true})}
+                        {...register(`idElements.${index}.idElementType`, { required: true })}
                     >
                         <option value="">Choose field type</option>
                         <option value="TEXT">Text</option>

@@ -25,12 +25,10 @@ router.get('/api/user', async (req,res)=>{
         res.send(error)
     }
 })
-
 router.get('/api/categories', async (req,res)=>{
     const cats = await prisma.category.findMany()
     res.send(cats)
 })
-
 router.get('/api/tags', async (req,res)=>{
     const tagSearch = req.query.tagSearch as string
     const tags = await prisma.tag.findMany({
@@ -45,7 +43,6 @@ router.get('/api/tags', async (req,res)=>{
     })
     res.send(tags)
 })
-
 router.get('/api/inventory/items', async (req, res)=>{
     const inventoryId = req.query.inventoryId as string
     try {
@@ -62,7 +59,6 @@ router.get('/api/inventory/items', async (req, res)=>{
         res.send(error)
     }
 })
-
 router.get('/api/inventory/fields', async (req, res)=>{
     const inventoryId = req.query.inventoryId as string
     try {
@@ -76,7 +72,6 @@ router.get('/api/inventory/fields', async (req, res)=>{
         res.send(error)
     }
 })
-
 router.get('/api/inventory', async (req,res)=>{
     const inventoryId = req.query.id as string
     if (!inventoryId) return res.status(400).send('Inventory ID required')
@@ -87,7 +82,11 @@ router.get('/api/inventory', async (req,res)=>{
             },
             include:{
                 tags: true,
-                fields: true,
+                fields: {
+                    orderBy: {
+                        order: 'asc'
+                    }
+                },
                 items: {
                     orderBy: {
                         createdAt: "desc"
@@ -114,7 +113,6 @@ router.get('/api/inventory', async (req,res)=>{
         res.send(err)
     }
 })
-
 router.get('/api/popularInventories', async (req, res)=>{
     const popularInventories = await prisma.inventory.findMany({
         orderBy:{
@@ -131,46 +129,43 @@ router.get('/api/popularInventories', async (req, res)=>{
     
     res.send(popularInventories)
 })
-
 router.get('/api/user/inventories', async (req,res)=>{
     const userId = req.query.userId as string
 
-    if (!userId) {
-        res.status(400).send('user ID required')
-    }else{
-        try{
-            const inventories = await prisma.inventory.findMany({
-                where:{
-                    creatorId: parseInt(userId)
+    if (!userId) return res.status(400).send('user ID required')
+    try{
+        const inventories = await prisma.inventory.findMany({
+            where:{
+                creatorId: parseInt(userId)
+            },
+            include:{
+                category: true,
+                tags: {
+                    omit: {
+                        id: true
+                    }
                 },
-                include:{
-                    category: true,
-                    tags: {
-                        omit: {
-                            id: true
-                        }
-                    },
-                },
-                omit:{
-                    categoryId: true,
-                    description: true,
-                    creatorId: true
-                },
-                orderBy: {
-                    createdAt: 'asc'
-                }
-            })
-            res.send(inventories)
-        }catch(err){
-            res.send(err)
-        }
+            },
+            omit:{
+                categoryId: true,
+                description: true,
+                creatorId: true
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        })
+        res.send(inventories)
+    }catch(err){
+        res.send(err)
     }
 })
-
 router.post('/api/inventory/createItem', async (req, res)=>{
     const {fieldValues, inventoryId, onConflictCustomId} = req.body
 
     let customId = onConflictCustomId
+
+    // console.log(fieldValues);
 
     try {
         await prisma.$transaction(async (tx) =>{
@@ -178,16 +173,23 @@ router.post('/api/inventory/createItem', async (req, res)=>{
                 where: {
                     id: inventoryId
                 },
-                include:{
+                select:{
+                    id: true,
                     customItemId: {
                         include: {
                             idElements: true
                         }
                     },
-                    fields: true
+                    fields: {
+                        orderBy: {
+                            order: 'asc'
+                        }
+                    },
+                    customItemIdSequence: true
                 }
             })
-
+            // console.log(inventory);
+            
             if (!inventory) {
                 throw Error('Inventory does not exist')
             }
@@ -197,7 +199,7 @@ router.post('/api/inventory/createItem', async (req, res)=>{
                 customId = generateId(inventory.customItemId.idElements, inventory.customItemId.separator || '', sequenceNumber)
             }
 
-            const itemData:any = {
+            const itemData: any = {
                 customId: customId,
                 inventory:{
                     connect:{
@@ -227,7 +229,7 @@ router.post('/api/inventory/createItem', async (req, res)=>{
             }
         })
         
-        res.send('item created')
+        res.send('Item created')
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
             if (error.code === "P2002") {
@@ -237,12 +239,11 @@ router.post('/api/inventory/createItem', async (req, res)=>{
         res.send(error)
     }
 })
-
 router.patch('/api/inventory/editItem', async (req,res)=>{
     const {fieldValues, itemId} = req.body
 
     if (!itemId) return res.status(400).send('Item ID required')
-
+    
     try {
         const editData:any = {}
         for (let i = 0; i < fieldValues.length; i++) {
@@ -272,20 +273,19 @@ router.patch('/api/inventory/editItem', async (req,res)=>{
             }
         })
         
-        res.send('edited item')
+        res.send('Item edited')
     } catch (error) {
         res.send(error)
     }
     
 })
-
 router.delete('/api/inventory/deleteItems', async (req,res)=>{
     let selectedItems = req.query['selectedItems[]'] as string[]
     if (!Array.isArray(selectedItems)) selectedItems = [selectedItems]
 
     const deleted = await prisma.item.deleteMany({where: {id: {in: selectedItems}}})
 
-    res.send('deleted items')
+    res.send('Items deleted')
 })
 
 

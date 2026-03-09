@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import axiosInstance from "../api/axiosConfig";
+import { useAlert } from "../hooks/useAlert";
 
 export default function AuthProvider({children}) {
     const nav = useNavigate()
+    const {showAlert} = useAlert()
     
     const [user, setUser] = useState(()=>{
         const savedUser = JSON.parse(localStorage.getItem('user'))
@@ -21,16 +23,18 @@ export default function AuthProvider({children}) {
             login(res.data)
         }).catch(err=>{
             setUser(null)
-            localStorage.removeItem('user');
+            localStorage.removeItem('user')
+            showAlert('Session update failed', 'danger')
         })
     }
     
     const handleUnauthenticated = () => {
         logout()
+        showAlert('User not authenticated', 'warning')
     }
     const handleUnauthorized = () => {
-        console.log('Unauthorized!');
         updateSession()
+        showAlert('Action not authorized', 'warning')
     }
     
     useEffect(() => {

@@ -17,12 +17,10 @@ function Inventory() {
     const {id} = useParams()
     const {user} = useAuth()
     const [inventory, setInventory] = useState()
-
+    
     const fillInventory = async ()=>{
         axiosInstance.get('/api/inventory', {params: {id: id}}).then(res=>{
             setInventory(res.data)
-        }).catch(err=>{
-            console.log(err);
         })
     }
 
@@ -30,8 +28,6 @@ function Inventory() {
         if (inventory) {
             axiosInstance.get('/api/inventory/items', {params:{inventoryId: inventory.id}}).then(res=>{
                 setInventory({...inventory, items:res.data})
-            }).catch(err=>{
-                console.log(err)
             })
         }
     }
@@ -40,8 +36,6 @@ function Inventory() {
         if (inventory) {
             axiosInstance.get('/api/inventory/fields', {params:{inventoryId: inventory.id}}).then(res=>{
                 setInventory({...inventory, fields:res.data})
-            }).catch(err=>{
-                console.log(err)
             })
         }
     }
@@ -50,8 +44,6 @@ function Inventory() {
         if (inventory) {
             axiosInstance.get('/api/inventory/usersWithAccess', {params:{inventoryId: inventory.id}}).then(res=>{
                 setInventory({...inventory, usersWithAccess:res.data})
-            }).catch(err=>{
-                console.log(err)
             })
         }
     }

@@ -5,10 +5,13 @@ import Button from "react-bootstrap/esm/Button"
 import axiosInstance from '../api/axiosConfig'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
+import { useAlert } from '../hooks/useAlert';
 
 function EditInventorySettingsForm({inventory, fillInventory}) {
     const {handleSubmit, register, setValue, reset} = useForm()
     const [categories, setCategories] = useState([])
+    const {showAlert} = useAlert()
+    const [selectedTags, setSelectedTags] = useState([])
 
     const fillCategories = async ()=>{
         axiosInstance.get('/api/categories').then(res=>{
@@ -19,6 +22,8 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
     const handleTagChange = (selected) => {
         let newSelected = new Set(selected.map(el=>el.label ? el.label : el))
         newSelected = [...newSelected]
+        console.log(newSelected);
+        setSelectedTags(newSelected)
         setValue('tags', newSelected)
     }
 
@@ -27,14 +32,16 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
     },[])
 
     useEffect(()=>{
+        const initialTags = inventory?.tags.map(el=>el.tagName) || []
+        setSelectedTags(initialTags)
         reset({
             title: inventory?.title || '',
             description: inventory?.description || '',
             category: inventory?.categoryId || '',
             accessType: inventory?.accessType || '',
-            tags: inventory?.tags.map(el=>el.tagName) || []
+            tags: initialTags
         });
-    },[categories])
+    }, [inventory])
 
     const onSubmit = (data)=>{
         console.log(data);
@@ -42,10 +49,10 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
             settings: data,
             inventoryId: inventory.id
         }).then(res=>{
-            console.log(res.data)
             fillInventory()
+            showAlert(res.data)
         }).catch(err=>{
-            console.log(err);
+            showAlert('Error updating inventory settings', 'danger')
         })
     }
 
@@ -106,7 +113,6 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
                 <Form.Label>Tags</Form.Label>
                 <AsyncTypeahead className='mb-3' 
                     placeholder="Enter tag name" 
-                    {...register('tags', {required:false})}
                     allowNew
                     multiple
                     onChange={handleTagChange}
@@ -114,7 +120,7 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
                     options={options}
                     isLoading={isLoading}
                     filterBy={()=>true}
-                    defaultSelected={inventory?.tags?.map(el=>el.tagName)}
+                    selected={selectedTags}
                 />
             </Form.Group>
             <Button type='submit' className='mb-3' variant='success'>Update settings</Button>

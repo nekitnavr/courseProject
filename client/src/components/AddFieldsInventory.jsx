@@ -37,8 +37,6 @@ function AddFieldsInventory({fillFields, fields, inventoryId}) {
             inventoryId: inventoryId
         }).then(res=>{
             fillFields()
-        }).catch(err=>{
-            console.log(err)
         })
     }
     

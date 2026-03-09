@@ -33,7 +33,6 @@ router.get('/api/inventory/usersWithAccess', async (req, res)=>{
         res.send(error)
     }
 })
-
 router.get('/api/user/accessibleInventories', async (req,res)=>{
     const userId = req.query.userId as string
     if (!userId) return res.status(400).send('User ID required')
@@ -59,7 +58,6 @@ router.get('/api/user/accessibleInventories', async (req,res)=>{
         res.send(err)
     }
 })
-
 router.get('/api/users', async (req,res)=>{
     try {
         let searchString = req.query.searchString as string
@@ -77,7 +75,6 @@ router.get('/api/users', async (req,res)=>{
         res.send(error)
     }
 })
-
 router.patch('/api/inventory/removeAccess', async (req,res)=>{
     try {
         const {users, inventoryId} = req.body
@@ -98,7 +95,6 @@ router.patch('/api/inventory/removeAccess', async (req,res)=>{
         res.send(error)
     }
 })
-
 router.patch('/api/inventory/addAccess', async (req,res)=>{
     try {
         const {user, inventoryId} = req.body
@@ -116,12 +112,11 @@ router.patch('/api/inventory/addAccess', async (req,res)=>{
             }
         })
         
-        res.send('Added access')
+        res.send('Access aded')
     } catch (error) {
         res.send(error)
     }
 })
-
 router.patch('/api/inventory/addField', async (req,res)=>{
     const {field, inventoryId} = req.body
     if (!inventoryId) res.status(400).send('Inventory ID required')
@@ -180,7 +175,6 @@ router.patch('/api/inventory/addField', async (req,res)=>{
         console.log(error)
     }
 })
-
 router.patch('/api/inventory/hideFields', async (req, res)=>{
     const {selectedFields} = req.body
 
@@ -193,12 +187,11 @@ router.patch('/api/inventory/hideFields', async (req, res)=>{
                 display: false
             }
         })
-        res.send('fields hidden')
+        res.send('Fields hidden')
     } catch (error) {
         res.send(error)
     }
 })
-
 router.patch('/api/inventory/showFields', async (req, res)=>{
     const {selectedFields} = req.body
 
@@ -211,12 +204,11 @@ router.patch('/api/inventory/showFields', async (req, res)=>{
                 display: true
             }
         })
-        res.send('showed fields')
+        res.send('Fields shown')
     } catch (error) {
         res.send(error)
     }
 })
-
 router.patch('/api/inventory/updateCustomId', async (req,res)=>{
     const {separator, idElements, inventoryId} = req.body
     let { configId } = req.body
@@ -228,7 +220,6 @@ router.patch('/api/inventory/updateCustomId', async (req,res)=>{
 
     try {
         if (idElements?.length == 0 && configId) {
-            console.log('delete config')
             await prisma.idConfig.delete({where: {id: configId}})
             return res.send('Custom id deleted')
         }
@@ -282,14 +273,13 @@ router.patch('/api/inventory/updateCustomId', async (req,res)=>{
             }
         })
         
-        res.send('patched custom id')
+        res.send('Custom ID updated')
     } catch (error) {
         console.log(error)
         res.send(error)
     }
 
 })
-
 router.patch('/api/inventory/settings', async (req, res)=>{
     const {settings, inventoryId} = req.body
     if (!inventoryId) return res.status(400).send('Inventory ID required')
@@ -320,7 +310,6 @@ router.patch('/api/inventory/settings', async (req, res)=>{
         res.send(error)
     }
 })
-
 router.delete('/api/inventory/deleteFields', async (req,res)=>{
     let selectedFields = req.query['selectedFields[]'] as string[]
     const inventoryId = req.query['inventoryId'] as string
@@ -358,13 +347,12 @@ router.delete('/api/inventory/deleteFields', async (req,res)=>{
             }
         })
         
-        res.send('deleted fields')
+        res.send('Fields deleted')
     } catch (error:any) {
         res.status(400).send(error.message)
     }
     // const deleted = await prisma.item.deleteMany({where: {id: {in: selectedFields}}})
 })
-
 router.post('/api/createInventory', async (req, res)=>{
     const {
         title,
@@ -436,7 +424,7 @@ router.post('/api/createInventory', async (req, res)=>{
             }
         })
 
-        res.send('created an inventory')
+        res.send('Inventory created')
     }catch(error){
         console.log(error);
         res.send(error)

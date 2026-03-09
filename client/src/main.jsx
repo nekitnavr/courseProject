@@ -12,27 +12,30 @@ import MainLayout from './components/MainLayout.jsx'
 import { ThemeProvider } from './components/ThemeProvider.jsx'
 import AuthProvider from './components/AuthProvider.jsx'
 import Inventory from './components/Inventory.jsx'
+import AlertProvider from './components/AlertProvider.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
       <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route element={<MainLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path='user/:id' element={<User />} />
-              <Route path='inventory/:id' element={<Inventory />} />
-              <Route path='/createInventory' element={<CreateInventory />} />
-            </Route>
+        <AlertProvider>
+          <AuthProvider>
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path='/user/:id' element={<User />} />
+                <Route path='/inventory/:id' element={<Inventory />} />
+                <Route path='/createInventory' element={<CreateInventory />} />
+              </Route>
 
-            <Route element={<AuthLayout />}>
-              <Route path="login" element={<Login />} />
-              <Route path="signup" element={<Signup />} />
-            </Route>
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+              </Route>
 
-          </Routes>
-        </AuthProvider>
+            </Routes>
+          </AuthProvider>
+        </AlertProvider>
       </BrowserRouter>
     </ThemeProvider>
   </StrictMode>,

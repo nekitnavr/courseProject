@@ -5,11 +5,13 @@ import Button from "react-bootstrap/esm/Button"
 import axiosInstance from '../api/axiosConfig'
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../hooks/useAuth';
+import { useAlert } from '../hooks/useAlert';
 
 function CreateInventoryForm({register, handleSubmit, setValue, formState, setTitleText, setTags, reset}) {
     const {user} = useAuth()
     const [categories, setCategories] = useState([])
     const typeaheadRef = useRef()
+    const {showAlert} = useAlert()
 
     const fillCategories = async ()=>{
         axiosInstance.get('/api/categories').then(res=>{
@@ -23,15 +25,15 @@ function CreateInventoryForm({register, handleSubmit, setValue, formState, setTi
 
     async function onSubmit(data) {
         console.log(data);
-        if(!user) return
+        if(!user) return console.log(`No user so can't create`)
         axiosInstance.post('/api/createInventory', {...data, creatorId: user.id}).then(res=>{
-            console.log(res.data);
             reset()
             typeaheadRef.current.clear()
             setTitleText('')
             setTags([])
+            showAlert(res.data)
         }).catch(err=>{
-            console.log(err);
+            showAlert('Error creating inventory', 'danger')
         })
     }
 

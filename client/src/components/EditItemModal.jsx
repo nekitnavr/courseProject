@@ -6,9 +6,11 @@ import Button from "react-bootstrap/esm/Button";
 import Form from 'react-bootstrap/Form'
 import { mapFieldValues } from "../lib/helpers";
 import axiosInstance from "../api/axiosConfig";
+import {useAlert} from '../hooks/useAlert'
 
 function EditItemModal({showModal, handleClose, fields, item, fillItems}) {
     const {register, handleSubmit, reset} = useForm()
+    const {showAlert} = useAlert()
 
     const onSubmit = (data)=> {
         const fieldValues = mapFieldValues(data.fields)
@@ -19,8 +21,9 @@ function EditItemModal({showModal, handleClose, fields, item, fillItems}) {
         }).then(res=>{
             handleClose()
             fillItems()
+            showAlert(res.data)
         }).catch(err=>{
-            console.log(err)
+            showAlert('Error updating item', 'danger')
         })
     }
 

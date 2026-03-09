@@ -38,7 +38,6 @@ router.post('/api/login', async (req, res, next)=>{
         res.send({user})
     })(req, res, next)
 })
-
 router.post('/api/signup', async (req,res)=>{
     const {name, password, email} = req.body
 
@@ -55,12 +54,10 @@ router.post('/api/signup', async (req,res)=>{
         else res.status(500).send('Error creating user')
     })
 })
-
 router.post('/api/logout', (req, res) => {
   res.clearCookie('token');
   res.send('Logged out');
 })
-
 router.get('/api/updateToken', isAuthenticated, async (req, res)=>{
     const user = req.user!
 

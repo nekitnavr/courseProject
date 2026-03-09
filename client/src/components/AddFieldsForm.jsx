@@ -4,10 +4,11 @@ import Button from 'react-bootstrap/esm/Button';
 import { useForm } from 'react-hook-form';
 import FieldsTable from './FieldsTable';
 import { maxFieldCount, initialFieldCounter } from '../lib/helpers';
-
+import { useAlert } from '../hooks/useAlert';
 
 function AddFieldsForm(formMethods) {
     const {register, handleSubmit, formState, reset} = useForm()
+    const {showAlert} = useAlert()
     
     const [fieldCounter, setFieldCounter] = useState(initialFieldCounter)
     const [fields, setFields] = useState([])
@@ -18,7 +19,6 @@ function AddFieldsForm(formMethods) {
         setFields([...fields, {...data, 'order':fields.length}])
         const currentFields = formMethods.getValues('fields') || [];
         formMethods.setValue('fields', [...currentFields, {...data, slot: fieldOfTypeNumber}])
-        console.log(formMethods.getValues('fields'));
     }
 
     const removeLast = ()=>{
@@ -28,7 +28,6 @@ function AddFieldsForm(formMethods) {
         setFields(prev=>prev.slice(0, -1))
         const currentFields = formMethods.getValues('fields') || [];
         formMethods.setValue('fields', currentFields.slice(0,-1))
-        console.log(formMethods.getValues('fields'));
     }
 
     useEffect(()=>{

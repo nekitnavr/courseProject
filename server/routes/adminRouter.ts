@@ -18,7 +18,7 @@ router.patch('/api/users/delete', async (req,res)=>{
             }
         })
 
-        res.send('Deleted users')
+        res.send('Users deleted')
     } catch (error) {
         res.send(error)
     }
@@ -38,7 +38,7 @@ router.patch('/api/users/block', async (req,res)=>{
             }
         })
         
-        res.send('Deleted users')
+        res.send('Users blocked')
     } catch (error) {
         res.send(error)
     }
@@ -58,7 +58,7 @@ router.patch('/api/users/unblock', async (req,res)=>{
             }
         })
         
-        res.send('Deleted users')
+        res.send('Users unblocked')
     } catch (error) {
         res.send(error)
     }
@@ -78,7 +78,7 @@ router.patch('/api/users/makeAdmin', async (req,res)=>{
             }
         })
         
-        res.send('Deleted users')
+        res.send('Users assigned role ADMIN')
     } catch (error) {
         res.send(error)
     }
@@ -98,7 +98,7 @@ router.patch('/api/users/makeUser', async (req,res)=>{
             }
         })
         
-        res.send('Deleted users')
+        res.send('Users assigned role USER')
     } catch (error) {
         res.send(error)
     }

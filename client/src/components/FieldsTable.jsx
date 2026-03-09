@@ -4,11 +4,13 @@ import Button from "react-bootstrap/esm/Button";
 import { Trash3, Eye, EyeSlash } from "react-bootstrap-icons";
 import {useTheme} from '../hooks/useTheme'
 import axiosInstance from "../api/axiosConfig";
+import {useAlert} from '../hooks/useAlert'
 
 function FieldsTable({fields, isView, fillFields}) {
     const {toggleSelectAll, toggleRow, selectAll, isSelected, getSelectedRows, deselectAll} = useRowSelect(fields)
     const {theme} = useTheme()
     const buttonVariant = theme == 'dark' ? 'outline-light' : 'outline-dark'
+    const {showAlert} = useAlert()
 
     const handleDelete = ()=>{
         if (getSelectedRows().length > 0){
@@ -21,8 +23,9 @@ function FieldsTable({fields, isView, fillFields}) {
             .then(res=>{
                 fillFields()
                 deselectAll()
+                showAlert(res.data)
             }).catch(err=>{
-                console.log(err)
+                showAlert('Error deleting fields', 'danger')
             })
         }
     }
@@ -32,8 +35,9 @@ function FieldsTable({fields, isView, fillFields}) {
                 selectedFields: getSelectedRows()
             }).then(res=>{
                 fillFields()
+                showAlert(res.data)
             }).catch(err=>{
-                console.log(err)
+                showAlert('Error showing fields', 'danger')
             })
         }
     }
@@ -43,8 +47,9 @@ function FieldsTable({fields, isView, fillFields}) {
                 selectedFields: getSelectedRows()
             }).then(res=>{
                 fillFields()
+                showAlert(res.data)
             }).catch(err=>{
-                console.log(err)
+                showAlert('Error hiding fields', 'danger')
             })
         }
     }

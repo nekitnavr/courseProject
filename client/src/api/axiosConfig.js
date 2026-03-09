@@ -12,6 +12,8 @@ axiosInstance.interceptors.response.use(
       window.dispatchEvent(new Event('unauthenticated'));
     }else if (error.response?.status === 403) {
       window.dispatchEvent(new Event('unauthorized'));
+    }else{
+      console.log(error);
     }
     return Promise.reject(error);
   }

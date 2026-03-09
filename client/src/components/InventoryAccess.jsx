@@ -8,6 +8,7 @@ import axiosInstance from '../api/axiosConfig';
 import { Trash3 } from 'react-bootstrap-icons';
 import { useAuth } from '../hooks/useAuth';
 import UsersTable from './UsersTable';
+import {useAlert} from '../hooks/useAlert'
 
 function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
     const {register, handleSubmit, setValue, watch, reset, formState:{isSubmitSuccessful}, setError, clearErrors} = useForm()
@@ -17,6 +18,7 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
     const [options, setOptions] = useState([])
     const {user} = useAuth()
     const typeaheadRef = createRef()
+    const {showAlert} = useAlert()
 
     const handleSearch = (data)=>{
         setIsLoading(true)
@@ -26,7 +28,7 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
         }}).then(res=>{
             setOptions(res.data)
         }).catch(err=>{
-            console.log(err)
+            showAlert('Error fetching user for search', 'danger')
         }).finally(()=>{
             setIsLoading(false)
         })
@@ -38,11 +40,11 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
                 users: getSelectedRows(),
                 inventoryId: inventoryId
             }).then(res=>{
-                console.log(res.data)
                 fillUsersWithAccess()
                 deselectAll()
+                showAlert(res.data)
             }).catch(err=>{
-                console.log(err.data)
+                showAlert('Error removing access', 'danger')
             })
         }
     }
@@ -61,11 +63,11 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
         if (user) {
             await axiosInstance.patch('/api/inventory/addAccess', {user: user, inventoryId: inventoryId})
             .then(res=>{
-                console.log(res.data)
                 fillUsersWithAccess()
+                showAlert(res.data)
             })
             .catch(err=>{
-                console.log(err)
+                showAlert('Error adding access', 'danger')
             })
         }else{
             setError('No user')

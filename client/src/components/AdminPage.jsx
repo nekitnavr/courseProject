@@ -75,8 +75,6 @@ function AdminPage() {
     const handleSelect = (e)=>{setSortValue(e.target.value)}
 
     return ( <>
-        <h2>The admin page allows user management, including: viewing, blocking, unblocking, deleting users, 
-            adding users to the admin role, and removing them from it.</h2>
         {users?.length > 0 && 
             <div className="d-flex gap-1 flex-wrap my-3">
                 <Button onClick={handleDelete} variant="danger"><Trash3 size={23} className="pb-1"></Trash3></Button>

@@ -5,28 +5,32 @@ import { useForm } from 'react-hook-form';
 import axiosInstance from '../api/axiosConfig';
 import RenderInput from '../lib/RenderInput';
 import { mapFieldValues } from '../lib/helpers.js';
+import {useAlert} from '../hooks/useAlert.jsx'
 
 function AddItemsForm({inventory, fillItems}) {
     const {register, handleSubmit, reset} = useForm() 
+    const {showAlert} = useAlert()
 
     const onSubmit = (data)=>{
         const fieldValues = mapFieldValues(data.fields)
-        // console.log(data);
-        // console.log(fieldValues)
+        console.log(fieldValues);
+        
         axiosInstance.post('/api/inventory/createItem', {
             fieldValues,
             inventoryId: inventory.id,
             onConflictCustomId: data.customId
-        }).then(res=>{
-            // console.log(res.data)
+        })
+        .then(res=>{
             fillItems()
             reset()
             setIsConflict()
+            showAlert(res.data, 'success', 1500)
         }).catch(err=>{
-            console.log(err.response.data)
             if (err.response.data.status == 'P2002') {
                 setIsConflict(err.response.data.customId)
+                return showAlert('Conflict occured', 'danger', 2000)
             }
+            showAlert('Error adding a new item', 'danger', 2000)
         })
     }
 
