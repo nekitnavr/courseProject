@@ -6,8 +6,9 @@ import axiosInstance from '../api/axiosConfig'
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '../hooks/useAuth';
 import { useAlert } from '../hooks/useAlert';
+import Markdown from 'react-markdown'
 
-function CreateInventoryForm({register, handleSubmit, setValue, formState, setTitleText, setTags, reset}) {
+function CreateInventoryForm({register, handleSubmit, setValue, formState, setTitleText, setTags, reset, watch}) {
     const {user} = useAuth()
     const [categories, setCategories] = useState([])
     const typeaheadRef = useRef()
@@ -73,7 +74,9 @@ function CreateInventoryForm({register, handleSubmit, setValue, formState, setTi
                     {...register('description', {required:false})} 
                     as="textarea"
                     placeholder="Enter description" 
+                    className='mb-1'
                 />
+                <Markdown>{watch('description')}</Markdown>
             </Form.Group>
             <Form.Group className='mb-3'>
                 <Form.Label className='required'>Category</Form.Label>

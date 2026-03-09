@@ -12,6 +12,8 @@ import AddCustomIdForm from "./AddCustomIdForm";
 import AddFieldsInventory from "./AddFieldsInventory";
 import EditInventorySettingsForm from "./EditInventorySettingsForm";
 import InventoryAccess from "./InventoryAccess";
+import InventoryDescription from "./InventoryDescription";
+import Container from 'react-bootstrap/Container'
 
 function Inventory() {
     const {id} = useParams()
@@ -109,6 +111,9 @@ function Inventory() {
                 />
             </Tab>
         )}
+        <Tab eventKey="description" title="Description">
+            <InventoryDescription description={inventory?.description}></InventoryDescription>
+        </Tab>
         <Tab eventKey="stats" title="Statistics"></Tab>
     </Tabs>
     </> );

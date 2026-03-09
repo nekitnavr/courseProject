@@ -6,9 +6,10 @@ import axiosInstance from '../api/axiosConfig'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { useAlert } from '../hooks/useAlert';
+import Markdown from 'react-markdown';
 
 function EditInventorySettingsForm({inventory, fillInventory}) {
-    const {handleSubmit, register, setValue, reset} = useForm()
+    const {handleSubmit, register, setValue, reset, watch} = useForm()
     const [categories, setCategories] = useState([])
     const {showAlert} = useAlert()
     const [selectedTags, setSelectedTags] = useState([])
@@ -85,6 +86,7 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
                     as="textarea"
                     placeholder="Enter description" 
                 />
+                <Markdown>{watch('description')}</Markdown>
             </Form.Group>
             <Form.Group className='mb-3'>
                 <Form.Label className='required'>Category</Form.Label>
