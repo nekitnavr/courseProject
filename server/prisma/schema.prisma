@@ -128,6 +128,8 @@ model Tag {
   id          Int         @id @default(autoincrement())
   tagName     String      @unique
   inventories Inventory[]
+
+  //gin index on the tagName
 }
 
 enum FieldType {

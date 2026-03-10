@@ -28,7 +28,7 @@ function InventoriesTable({inventories, editable, fillInventories, showCreator})
     }
 
     return ( <>
-        {editable && 
+        {(editable && inventories?.length > 0) && 
             <div className="d-flex gap-1 flex-wrap my-3">
                 <Button onClick={deleteSelected} variant="danger"><Trash3 size={23} className="pb-1"></Trash3></Button>
             </div>

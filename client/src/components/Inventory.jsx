@@ -94,7 +94,10 @@ function Inventory() {
         )}
         {accessLevel > 1 && (
             <Tab eventKey="customId" title="Custom ID">
-                <AddCustomIdForm customId={inventory?.customItemId} inventoryId={inventory?.id}></AddCustomIdForm>
+                <AddCustomIdForm 
+                    customId={inventory?.customItemId} 
+                    inventoryId={inventory?.id}
+                ></AddCustomIdForm>
             </Tab>
         )}
         {accessLevel > 1 && (

@@ -56,16 +56,10 @@ router.get('/api/categories', async (req,res)=>{
 })
 router.get('/api/tags', async (req,res)=>{
     const tagSearch = req.query.tagSearch as string
-    const tags = await prisma.tag.findMany({
-        where: {
-            tagName: {
-                startsWith: tagSearch
-            }
-        },
-        omit:{
-            id: true
-        }
-    })
+    const tags = await prisma.$queryRaw`
+        SELECT id, "tagName" FROM "Tag" 
+        WHERE to_tsvector('english', "tagName") @@ plainto_tsquery('english', ${tagSearch})
+    `
     res.send(tags)
 })
 router.get('/api/inventory/items', async (req, res)=>{

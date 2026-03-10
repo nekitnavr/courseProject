@@ -15,12 +15,9 @@ router.use(authorize(['USER', 'ADMIN']))
 router.get('/api/users', async (req,res)=>{
     try {
         let searchString = req.query.searchString as string
-        let userId = req.query.userId as string
-
         const users = await prisma.$queryRaw`
             SELECT name, email FROM "User" 
-            WHERE to_tsvector('english', name || ' ' || email) @@ websearch_to_tsquery('english', ${searchString}) 
-            AND id != ${userId}
+            WHERE to_tsvector('english', name || ' ' || email) @@ plainto_tsquery('english', ${searchString}) 
             LIMIT 5;
         `
         res.send(users)

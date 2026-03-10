@@ -11,7 +11,7 @@ function AdminPage() {
     const [sortedUsers, setSortedUsers] = useState([])
     const [sortValue, setSortValue] = useState('')
     const rowSelect = useRowSelect(users || [])
-    const {getSelectedRows} = rowSelect
+    const {getSelectedRows, deselectAll} = rowSelect
 
     useEffect(()=>{
         fillUsers()
@@ -43,7 +43,10 @@ function AdminPage() {
     const handleDelete = ()=>{
         if (getSelectedRows().length > 0) {
             axiosInstance.patch('/api/users/delete', {userIds: getSelectedRows()})
-            .then(res=>fillUsers())
+            .then(res=>{
+                deselectAll()
+                fillUsers()
+            })
         }
     }
 

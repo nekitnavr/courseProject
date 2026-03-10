@@ -13,7 +13,6 @@ function TagPage() {
     useEffect(()=>{
         fillTag()
     }, [])
-    console.log(tag);
     
     const fillTag = ()=>{
         axiosInstance.get('/api/tag', {params: {tagId: id}}).then(res=>{

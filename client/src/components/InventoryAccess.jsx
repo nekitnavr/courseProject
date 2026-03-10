@@ -24,7 +24,6 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
         setIsLoading(true)
         axiosInstance.get('/api/users', {params: {
             searchString: data,
-            userId: user.id
         }}).then(res=>{
             setOptions(res.data)
         }).catch(err=>{
