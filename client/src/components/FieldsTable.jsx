@@ -60,7 +60,7 @@ function FieldsTable({fields, isView, fillFields}) {
             <Button onClick={handleShow} variant={buttonVariant}><Eye size={23} className="pb-1"></Eye></Button>
             <Button onClick={handleHide} variant={buttonVariant}><EyeSlash size={23} className="pb-1"></EyeSlash></Button>
         </div>}
-        {fields && <Table className="text-start">
+        {fields && <Table className="text-start" responsive>
             <thead>
                 <tr>
                     {!isView && <th>

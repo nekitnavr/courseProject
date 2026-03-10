@@ -1,5 +1,6 @@
 import Container from "react-bootstrap/esm/Container";
 import { Outlet } from "react-router";
+import AlertContainer from "./AlertContainer";
 
 function AuthLayout() {
     return ( <>

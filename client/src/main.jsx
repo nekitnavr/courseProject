@@ -13,6 +13,7 @@ import { ThemeProvider } from './components/ThemeProvider.jsx'
 import AuthProvider from './components/AuthProvider.jsx'
 import Inventory from './components/Inventory.jsx'
 import AlertProvider from './components/AlertProvider.jsx'
+import TagPage from './components/TagPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path='/user/:id' element={<User />} />
                 <Route path='/inventory/:id' element={<Inventory />} />
                 <Route path='/createInventory' element={<CreateInventory />} />
+                <Route path='/tag/:id' element={<TagPage/>}></Route>
               </Route>
 
               <Route element={<AuthLayout />}>

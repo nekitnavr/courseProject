@@ -7,6 +7,31 @@ import { typeMap } from '../lib/helpers.js'
 
 const router = express.Router()
 
+router.get('/api/tag', async (req, res)=>{
+    try {
+        const tagId = parseInt(req.query.tagId as string)
+        if (!tagId) return res.status(400).send('Tag ID required')
+        
+        const tag = await prisma.tag.findUnique({
+            where: {
+                id: tagId
+            },
+            include: {
+                inventories: {
+                    include: {
+                        tags: true,
+                        category: true
+                    }
+                }
+            }
+        })
+        if (!tag) return res.status(404).send('No tag found')
+
+        res.send(tag)
+    } catch (error) {
+        res.send(error)
+    }    
+})
 router.get('/api/user', async (req,res)=>{
     const userId = req.query.id as string
 
@@ -122,12 +147,36 @@ router.get('/api/popularInventories', async (req, res)=>{
         },
         include:{
             tags: true,
-            category: true
+            category: true,
+            creator: {
+                select: {
+                    name: true
+                }
+            }
         },
         take: 5
     })
     
     res.send(popularInventories)
+})
+router.get('/api/latestInventories', async (req, res)=>{
+    const latestInventories = await prisma.inventory.findMany({
+        orderBy:{
+            createdAt: 'desc'
+        },
+        include:{
+            tags: true,
+            category: true,
+            creator: {
+                select: {
+                    name: true
+                }
+            }
+        },
+        take: 5
+    })
+    
+    res.send(latestInventories)
 })
 router.get('/api/user/inventories', async (req,res)=>{
     const userId = req.query.userId as string

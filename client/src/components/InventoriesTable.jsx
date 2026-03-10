@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/esm/Button';
 import axiosInstance from '../api/axiosConfig';
 import { useAlert } from '../hooks/useAlert';
 
-function InventoriesTable({inventories, editable, fillInventories}) {
+function InventoriesTable({inventories, editable, fillInventories, showCreator}) {
     const {toggleSelectAll, toggleRow, selectAll, isSelected, getSelectedRows, deselectAll} = useRowSelect(inventories || [])
     const {showAlert} = useAlert()
     let nav = useNavigate()
@@ -33,7 +33,7 @@ function InventoriesTable({inventories, editable, fillInventories}) {
                 <Button onClick={deleteSelected} variant="danger"><Trash3 size={23} className="pb-1"></Trash3></Button>
             </div>
         }
-        {inventories?.length > 0 && <Table className='text-start' hover>
+        {inventories?.length > 0 && <Table className='text-start' hover responsive>
             <thead>
                 <tr>
                     {editable && <th>
@@ -46,6 +46,7 @@ function InventoriesTable({inventories, editable, fillInventories}) {
                         </th>
                     }
                     <th>Inventory title</th>
+                    {showCreator && <th>Creator</th>}
                     <th>Tags</th>
                     <th>Category</th>
                     <th>Access type</th>
@@ -66,6 +67,7 @@ function InventoriesTable({inventories, editable, fillInventories}) {
                             </td>
                         }
                         <td>{inventory.title}</td>
+                        {showCreator && <td>{inventory?.creator?.name}</td>}
                         <td>
                             {inventory.tags?.map((el, i)=>(
                                 <Badge key={i} className="me-2" style={{fontSize: '0.9rem'}}>{el.tagName}</Badge>

@@ -1,16 +1,12 @@
 import '../styles/Bar.css'
 import Navbar from 'react-bootstrap/Navbar'
 import Form from 'react-bootstrap/Form'
-import Nav from 'react-bootstrap/Nav'
-import { useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import Button from 'react-bootstrap/esm/Button';
 import { useTheme } from '../hooks/useTheme';
-import FormCheckInput from 'react-bootstrap/esm/FormCheckInput';
 import { NavLink } from 'react-router';
 
 function Bar() {
-    const {user, logout} = useAuth()
+    const {user} = useAuth()
     const {toggleTheme, theme} = useTheme()
     
     return ( <>
@@ -19,14 +15,13 @@ function Bar() {
             <NavLink as={NavLink} to="/" className={`${theme}`}>Browse</NavLink>
         </div>
         <div className=' d-flex flex-row gap-3 align-items-center'>
-            {/* <Button onClick={toggleTheme}>Toggle theme</Button> */}
             <Form.Switch className='pt-1' type='switch' color='black' onChange={toggleTheme} checked={theme=='light'}></Form.Switch>
             
             {user ? (
                 <>
                     <NavLink as={NavLink} to={`/user/${user.id}`} className={`${theme}`}>{user.email}</NavLink>
                 </>
-            ) : <NavLink as={NavLink} to="/login" className={`ms-auto`}>Login</NavLink>}
+            ) : <NavLink as={NavLink} to="/login" className={`${theme}`}>Login</NavLink>}
         </div>
     </Navbar> 
     </> );

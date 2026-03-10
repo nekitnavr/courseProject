@@ -71,7 +71,7 @@ function ItemsTable({inventory, fillItems, accessLevel}) {
                     <Button onClick={deleteSelected} variant="danger"><Trash3 size={23} className="pb-1"></Trash3></Button>
                 </div>
             }
-            {inventory.fields?.length > 0 ? <Table className="text-start" hover>
+            {inventory.fields?.length > 0 ? <Table className="text-start" hover responsive>
                 <thead>
                     <tr>
                         {accessLevel > 0 && <th>

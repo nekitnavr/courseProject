@@ -34,13 +34,13 @@ function User() {
         })
     }
 
+    const isOwner = currentUser?.id == idFromParams
+
     useEffect(()=>{
         fillInventories()
-        fillAccessibleInventories()
+        if(isOwner) fillAccessibleInventories()
         fillUser()
     }, [idFromParams])
-
-    const isOwner = currentUser?.id == idFromParams
     
     return ( <>
         <h2 className='mb-3'>{user?.email}'s Inventories</h2>

@@ -2,7 +2,7 @@ import Table from 'react-bootstrap/esm/Table';
 
 function UsersTable({rowSelect:{toggleSelectAll, selectAll, isSelected, toggleRow}, users, headers, fields}) {
     return ( <>
-        <Table>
+        <Table responsive>
             <thead>
                 <tr>
                     <th><input type="checkbox" name='selectAll' onChange={toggleSelectAll} checked={selectAll}/></th>

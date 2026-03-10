@@ -74,7 +74,7 @@ function Inventory() {
     {inventory && <h2 className="ps-1 mb-3">
         <Link to={`/user/${inventory.creatorId}`}>{inventory.title}</Link>
         {inventory.tags.map((el, i)=>(
-            <Badge key={i} className="p-1 ms-2">{el.tagName}</Badge>
+            <Badge key={i} className="p-1 ms-2" as={Link} to={`/tag/${el.id}`}>{el.tagName}</Badge>
         ))}
     </h2>}
     <Tabs defaultActiveKey="view" className="mb-3">
