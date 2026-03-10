@@ -13,8 +13,6 @@ function AddItemsForm({inventory, fillItems}) {
 
     const onSubmit = (data)=>{
         const fieldValues = mapFieldValues(data.fields)
-        console.log(fieldValues);
-        
         axiosInstance.post('/api/inventory/createItem', {
             fieldValues,
             inventoryId: inventory.id,

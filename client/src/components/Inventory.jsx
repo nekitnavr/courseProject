@@ -52,7 +52,7 @@ function Inventory() {
     
     useEffect(()=>{
         fillInventory()
-    }, [])
+    }, [id])
 
     useEffect(()=>{
         console.log(inventory);

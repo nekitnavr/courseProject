@@ -18,7 +18,7 @@ router.get('/api/users', async (req,res)=>{
         const users = await prisma.$queryRaw`
             SELECT name, email FROM "User" 
             WHERE to_tsvector('english', name || ' ' || email) @@ plainto_tsquery('english', ${searchString}) 
-            LIMIT 5;
+            LIMIT 10;
         `
         res.send(users)
     } catch (error) {

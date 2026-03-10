@@ -22,11 +22,7 @@ function Dashboard() {
     })
   }
   const fillTagCloud = () => {
-    console.log('tag');
-    
     axiosInstance.get('/api/tagCloud').then((res) => {
-      console.log(res.data);
-      
       setTagCloud(res.data)
     })
   }

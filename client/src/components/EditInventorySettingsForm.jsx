@@ -33,7 +33,7 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
     },[])
 
     useEffect(()=>{
-        const initialTags = inventory?.tags.map(el=>el.tagName) || []
+        const initialTags = inventory?.tags?.map(el=>el.tagName) || []
         setSelectedTags(initialTags)
         reset({
             title: inventory?.title || '',

@@ -84,6 +84,9 @@ router.get('/api/inventory/fields', async (req, res)=>{
         const fields = await prisma.field.findMany({
             where:{
                 inventoryId: inventoryId
+            },
+            orderBy: {
+                order: 'asc'
             }
         })
         res.send(fields)
@@ -130,6 +133,23 @@ router.get('/api/inventory', async (req,res)=>{
     } catch (err) {
         console.log(err)
         res.send(err)
+    }
+})
+router.get('/api/inventories', async (req,res)=>{
+    try {
+        const searchString = req.query.searchString as string
+        const inventories = await prisma.$queryRaw`
+            SELECT 
+                id, 
+                title, 
+                LEFT(description, 150) as description 
+            FROM "Inventory" 
+            WHERE to_tsvector('english', title || ' ' || COALESCE(description, '')) @@ plainto_tsquery('english', ${searchString}) 
+            LIMIT 5;
+        `
+        res.send(inventories)
+    } catch (error) {
+        res.send(error)
     }
 })
 router.get('/api/popularInventories', async (req, res)=>{

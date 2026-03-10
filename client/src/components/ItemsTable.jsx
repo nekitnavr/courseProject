@@ -24,9 +24,9 @@ function ItemsTable({inventory, fillItems, accessLevel}) {
 
     const [fieldsToRender, setFieldsToRender] = useState()
     useEffect(()=>{
-        setFieldsToRender(inventory?.fields.filter((field)=>field.display == true).map(
+        setFieldsToRender(inventory?.fields?.filter((field)=>field.display == true).map(
             field=>({...field, inDbName: typeMap[field.fieldType]+field.slotNumber})
-        ))
+        ) || [])
     }, [inventory])
 
     const {toggleSelectAll, toggleRow, selectAll, isSelected, getSelectedRows, deselectAll} = useRowSelect(inventory?.items)
@@ -128,7 +128,7 @@ function ItemsTable({inventory, fillItems, accessLevel}) {
                 </tbody>
             </Table> : <h3 className="mt-5">No fields to display in this inventory</h3>}
         </> : <Spinner></Spinner>}
-        {inventory?.items.length == 0 && (
+        {inventory?.items?.length == 0 && (
             <h3 className="text-center">No items in this inventory</h3>
         )}
     </> );
