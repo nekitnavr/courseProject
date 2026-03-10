@@ -178,6 +178,22 @@ router.get('/api/latestInventories', async (req, res)=>{
     
     res.send(latestInventories)
 })
+router.get('/api/tagCloud', async (req, res)=>{
+    try {
+        const tags = await prisma.tag.findMany({
+            orderBy: {
+                inventories: {
+                    _count: 'desc'
+                }
+            },
+            take: 10
+        })
+        
+        res.send(tags)
+    } catch (error) {
+        res.send(error)
+    }
+})
 router.get('/api/user/inventories', async (req,res)=>{
     const userId = req.query.userId as string
 

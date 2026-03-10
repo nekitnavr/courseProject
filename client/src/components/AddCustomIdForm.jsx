@@ -89,7 +89,7 @@ function AddCustomIdForm({ setValue: setOuterFormValue, customId, inventoryId })
                 </Form.Group>
             ))}
             <div className='d-flex gap-3'>
-                <Button onClick={() => addElement()}>Add id element</Button>
+                {idElements?.length < 10 && <Button onClick={() => addElement()}>Add id element</Button>}
                 {idElements[0] && <Button onClick={() => reset({ idElements: [] })}>Clear</Button>}
                 {idElements[0] && <Button onClick={() => remove(idElements.length - 1)}>Remove last element</Button>}
                 {!setOuterFormValue && <Button variant='success' type='submit'>Update custom id</Button>}

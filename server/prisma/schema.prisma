@@ -33,7 +33,7 @@ model Inventory {
   description String?
   accessType  AccessType @default(PUBLIC)
   creatorId   Int
-  creator     User       @relation(fields: [creatorId], references: [id])
+  creator     User       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   createdAt   DateTime   @default(now())
 
   customItemId         IdConfig?
