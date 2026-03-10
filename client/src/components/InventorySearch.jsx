@@ -1,8 +1,6 @@
-import { Link, OpticalAudio, Search } from 'react-bootstrap-icons';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead'
 import axiosInstance from '../api/axiosConfig';
 import { useRef, useState } from 'react';
-import Nav from 'react-bootstrap/Nav'
 import { useNavigate } from 'react-router';
 
 function InventorySearch() {

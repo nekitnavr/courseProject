@@ -2,7 +2,7 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/esm/Button';
 import Alert from 'react-bootstrap/Alert'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import axiosInstance from '../api/axiosConfig';
 import {Link, useNavigate} from 'react-router'

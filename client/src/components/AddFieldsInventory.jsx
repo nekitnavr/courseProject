@@ -29,7 +29,6 @@ function AddFieldsInventory({fillFields, fields, inventoryId}) {
     },[formState])
 
     const onSubmit = (data)=>{
-        // console.log(data)
         const fieldOfTypeNumber = fieldCounter[data.fieldType]+1
         setFieldCounter(prev=>({...prev, [data.fieldType]: fieldOfTypeNumber }))
         axiosInstance.patch('/api/inventory/addField', {

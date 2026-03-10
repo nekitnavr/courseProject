@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {useNavigate, useParams, useSearchParams} from 'react-router'
+import {useNavigate, useParams} from 'react-router'
 import axiosInstance from '../api/axiosConfig';
 import Spinner from 'react-bootstrap/Spinner'
 import InventoriesTable from './InventoriesTable';

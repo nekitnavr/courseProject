@@ -1,13 +1,9 @@
 import '../styles/required.css'
-import Container from "react-bootstrap/esm/Container"
 import { useForm } from "react-hook-form"
-import { Link } from "react-router"
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
-import { useEffect, useEffectEvent, useState } from "react"
+import { useState } from "react"
 import Badge from 'react-bootstrap/Badge'
-import axiosInstance from '../api/axiosConfig'
-import { useAuth } from '../hooks/useAuth'
 import AddFieldsForm from './AddFieldsForm'
 import AddCustomIdForm from './AddCustomIdForm'
 import CreateInventoryForm from './CreateInventoryForm'

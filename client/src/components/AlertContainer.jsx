@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import Alert from 'react-bootstrap/Alert'
 import { AlertContext } from '../context/AlertContext';
+
 function AlertContainer() {
     const {showAlert, isShow, alertText, variant} = useContext(AlertContext)
     return ( <>
