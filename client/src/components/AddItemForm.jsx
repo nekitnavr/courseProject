@@ -2,19 +2,17 @@ import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/esm/Button';
 import Form from 'react-bootstrap/Form'
 import { useForm } from 'react-hook-form';
-import axiosInstance from '../api/axiosConfig';
-import RenderInput from '../lib/RenderInput';
-import { mapFieldValues } from '../lib/helpers.js';
+import axiosInstance from '../api/axiosConfig.js';
+import RenderInput from '../lib/RenderInput.jsx';
 import {useAlert} from '../hooks/useAlert.jsx'
 
 function AddItemsForm({inventory, fillItems}) {
-    const {register, handleSubmit, reset} = useForm() 
+    const {register, handleSubmit, reset, watch} = useForm({fields:{}}) 
     const {showAlert} = useAlert()
 
     const onSubmit = (data)=>{
-        const fieldValues = mapFieldValues(data.fields)
         axiosInstance.post('/api/inventory/createItem', {
-            fieldValues,
+            fieldValues: data.fields,
             inventoryId: inventory.id,
             onConflictCustomId: data.customId
         })
@@ -22,7 +20,7 @@ function AddItemsForm({inventory, fillItems}) {
             fillItems()
             reset()
             setIsConflict()
-            showAlert(res.data, 'success', 1500)
+            showAlert('Item added', 'success', 1500)
         }).catch(err=>{
             if (err.response.data.status == 'P2002') {
                 setIsConflict(err.response.data.customId)
@@ -31,6 +29,10 @@ function AddItemsForm({inventory, fillItems}) {
             showAlert('Error adding a new item', 'danger', 2000)
         })
     }
+
+    useEffect(()=>{
+        reset()
+    }, [inventory?.fields, reset])
 
     const [isConfilct, setIsConflict] = useState()
     

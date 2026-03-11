@@ -7,7 +7,7 @@ import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 import Badge from "react-bootstrap/esm/Badge";
 import FieldsTable from "./FieldsTable";
-import AddItemsForm from "./AddItemsForm";
+import AddItemsForm from "./AddItemForm";
 import AddCustomIdForm from "./AddCustomIdForm";
 import AddFieldsInventory from "./AddFieldsInventory";
 import EditInventorySettingsForm from "./EditInventorySettingsForm";
@@ -25,28 +25,39 @@ function Inventory() {
         })
     }
 
+    const fillFieldsAndItems = async ()=>{
+        if (!inventory) return Promise.resolve()
+        return Promise.all([
+            axiosInstance.get('/api/inventory/fields', {params:{inventoryId: inventory.id}}),
+            axiosInstance.get('/api/inventory/items', {params:{inventoryId: inventory.id}})
+        ]).then(([fieldsRes, itemsRes])=>{
+            setInventory(prev=>({
+                ...prev, 
+                fields: fieldsRes.data,
+                items: itemsRes.data
+            }))
+        })
+    }
+
     const fillItems = async ()=>{
-        if (inventory) {
-            axiosInstance.get('/api/inventory/items', {params:{inventoryId: inventory.id}}).then(res=>{
-                setInventory({...inventory, items:res.data})
-            })
-        }
+        if (!inventory) return Promise.resolve() 
+        return axiosInstance.get('/api/inventory/items', {params:{inventoryId: inventory.id}}).then(res=>{
+            setInventory(prevInventory=>({...prevInventory, items:res.data}))
+        })
     }
 
     const fillFields = async ()=>{
-        if (inventory) {
-            axiosInstance.get('/api/inventory/fields', {params:{inventoryId: inventory.id}}).then(res=>{
-                setInventory({...inventory, fields:res.data})
-            })
-        }
+        if (!inventory) return Promise.resolve() 
+        return axiosInstance.get('/api/inventory/fields', {params:{inventoryId: inventory.id}}).then(res=>{
+            setInventory(prevInventory=>({...prevInventory, fields:res.data}))
+        })
     }
 
     const fillUsersWithAccess = async ()=>{
-        if (inventory) {
-            axiosInstance.get('/api/inventory/usersWithAccess', {params:{inventoryId: inventory.id}}).then(res=>{
-                setInventory({...inventory, usersWithAccess:res.data})
-            })
-        }
+        if (!inventory) return Promise.resolve()
+        return axiosInstance.get('/api/inventory/usersWithAccess', {params:{inventoryId: inventory.id}}).then(res=>{
+            setInventory(prevInventory=>({...prevInventory, usersWithAccess:res.data}))
+        })
     }
     
     useEffect(()=>{
@@ -88,7 +99,13 @@ function Inventory() {
         {accessLevel > 1 && (
             <Tab eventKey="fields" title="Fields">
                 <FieldsTable fields={inventory?.fields} isView={false} fillFields={fillFields}></FieldsTable>
-                <AddFieldsInventory fillFields={fillFields} fields={inventory?.fields} inventoryId={inventory?.id}></AddFieldsInventory>
+                <AddFieldsInventory 
+                    fillFields={fillFields}
+                    fillItems={fillItems}
+                    fields={inventory?.fields} 
+                    inventoryId={inventory?.id}
+                    fillFieldsAndItems={fillFieldsAndItems}
+                />
             </Tab>
         )}
         {accessLevel > 1 && (

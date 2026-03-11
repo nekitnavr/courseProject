@@ -4,20 +4,18 @@ import RenderInput from '../lib/RenderInput';
 import {useForm} from 'react-hook-form'
 import Button from "react-bootstrap/esm/Button";
 import Form from 'react-bootstrap/Form'
-import { mapFieldValues } from "../lib/helpers";
 import axiosInstance from "../api/axiosConfig";
 import {useAlert} from '../hooks/useAlert'
 
-function EditItemModal({showModal, handleClose, fields, item, fillItems}) {
+function EditItemModal({showModal, handleClose, fields, item, fillItems, inventoryId}) {
     const {register, handleSubmit, reset} = useForm()
     const {showAlert} = useAlert()
 
     const onSubmit = (data)=> {
-        const fieldValues = mapFieldValues(data.fields)
-
         axiosInstance.patch('/api/inventory/editItem', {
-            fieldValues,
-            itemId:item.id
+            fieldValues: data.fields,
+            itemId:item.id,
+            inventoryId: inventoryId
         }).then(res=>{
             handleClose()
             fillItems()

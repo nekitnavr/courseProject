@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { maxFieldCount, initialFieldCounter } from '../lib/helpers';
 import axiosInstance from '../api/axiosConfig';
 
-function AddFieldsInventory({fillFields, fields, inventoryId}) {
+function AddFieldsInventory({fields, inventoryId, fillFieldsAndItems}) {
     const {register, handleSubmit, formState, reset} = useForm()
     
     const getFieldCounts = ()=>{
@@ -28,15 +28,15 @@ function AddFieldsInventory({fillFields, fields, inventoryId}) {
         }
     },[formState])
 
-    const onSubmit = (data)=>{
+    const onSubmit = async (data)=>{
         const fieldOfTypeNumber = fieldCounter[data.fieldType]+1
         setFieldCounter(prev=>({...prev, [data.fieldType]: fieldOfTypeNumber }))
         axiosInstance.patch('/api/inventory/addField', {
             field: data,
             inventoryId: inventoryId
         }).then(res=>{
-            fillFields()
-        })
+            fillFieldsAndItems()
+        }) 
     }
     
     return ( <>

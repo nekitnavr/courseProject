@@ -7,7 +7,7 @@ function AlertContainer() {
     return ( <>
         <Alert 
             className='position-fixed start-50 translate-middle' 
-            style={{zIndex: 1, top: 55, maxWidth: '900px'}}
+            style={{zIndex: 100000, top: 55, maxWidth: '900px'}}
             variant={variant}
             show={isShow}
         >

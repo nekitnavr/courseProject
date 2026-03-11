@@ -65,6 +65,7 @@ function ItemsTable({inventory, fillItems, accessLevel}) {
                 fields={inventory?.fields} 
                 item={itemForEdit}
                 fillItems={fillItems}
+                inventoryId={inventory.id}
             />
             {(accessLevel > 0 && inventory.fields?.length > 0) && 
                 <div className="d-flex gap-1 flex-wrap my-3">

@@ -1,10 +1,5 @@
 import random from 'random'
 
-export const mapFieldValues = (fields)=>(Object.entries(fields).map(([key, value]) => ({
-    fieldId: key,
-    value: value
-})))
-
 export const typeMap = {
     'SINGLE_LINE': 'singleLine',
     'MULTI_LINE': 'multiLine',

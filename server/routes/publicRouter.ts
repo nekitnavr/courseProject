@@ -241,11 +241,10 @@ router.get('/api/user/inventories', async (req,res)=>{
 })
 router.post('/api/inventory/createItem', async (req, res)=>{
     const {fieldValues, inventoryId, onConflictCustomId} = req.body
-
+    if(!inventoryId) return res.status(400).send('Inventory ID required')
+    
     let customId = onConflictCustomId
-
-    // console.log(fieldValues);
-
+    
     try {
         await prisma.$transaction(async (tx) =>{
             const inventory = await tx.inventory.findUnique({
@@ -267,7 +266,6 @@ router.post('/api/inventory/createItem', async (req, res)=>{
                     customItemIdSequence: true
                 }
             })
-            // console.log(inventory);
             
             if (!inventory) {
                 throw Error('Inventory does not exist')
@@ -286,13 +284,13 @@ router.post('/api/inventory/createItem', async (req, res)=>{
                     }
                 },
             }
-            inventory.fields.forEach((field: FieldModel, index)=>{
-                let val = fieldValues[index].value
+            inventory.fields.forEach((field: FieldModel)=>{
+                let val = fieldValues[field.id]
                 if (field.fieldType == 'NUMERIC') {
                     val = parseInt(val)
                     val = isNaN(val) ? null : val
                 }
-                itemData[typeMap[field.fieldType]+field.slotNumber] = val
+                itemData[typeMap[field.fieldType] + field.slotNumber] = val
             })
             
             const item = await tx.item.create({data:itemData})
@@ -319,32 +317,33 @@ router.post('/api/inventory/createItem', async (req, res)=>{
     }
 })
 router.patch('/api/inventory/editItem', async (req,res)=>{
-    const {fieldValues, itemId} = req.body
-
-    if (!itemId) return res.status(400).send('Item ID required')
-    
     try {
+        const {fieldValues, itemId, inventoryId} = req.body
+        if (!inventoryId) return res.status(400).send('Inventory ID required')
+        if (!itemId) return res.status(400).send('Item ID required')
+
+        const fields = await prisma.field.findMany({
+            where: {
+                inventoryId: inventoryId
+            },
+            select:{
+                id: true,
+                fieldType: true,
+                slotNumber: true
+            }
+        })
+
         const editData:any = {}
-        for (let i = 0; i < fieldValues.length; i++) {
-            const field = await prisma.field.findUnique({
-                where: {
-                    id: fieldValues[i].fieldId
-                },
-                select:{
-                    fieldType: true,
-                    slotNumber: true
-                }
-            })
-            if (!field) throw Error(`Field doesn't exist`)
-            const inDbName = typeMap[field.fieldType]+field.slotNumber
-            let val = fieldValues[i].value
+
+        fields.forEach(field => {
+            let val = fieldValues[field.id]
             if (field.fieldType == 'NUMERIC') {
                 val = parseInt(val)
                 val = isNaN(val) ? null : val
             }
-            editData[inDbName] = val
-        }
-
+            editData[typeMap[field.fieldType] + field.slotNumber] = val
+        });
+        
         await prisma.item.update({
             where: {id: itemId}, 
             data:{
@@ -356,7 +355,6 @@ router.patch('/api/inventory/editItem', async (req,res)=>{
     } catch (error) {
         res.send(error)
     }
-    
 })
 router.delete('/api/inventory/deleteItems', async (req,res)=>{
     let selectedItems = req.query['selectedItems[]'] as string[]

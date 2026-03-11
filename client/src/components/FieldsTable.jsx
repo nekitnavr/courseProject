@@ -11,7 +11,7 @@ function FieldsTable({fields, isView, fillFields}) {
     const {theme} = useTheme()
     const buttonVariant = theme == 'dark' ? 'outline-light' : 'outline-dark'
     const {showAlert} = useAlert()
-
+    
     const handleDelete = ()=>{
         if (getSelectedRows().length > 0){
             axiosInstance.delete('/api/inventory/deleteFields', {
