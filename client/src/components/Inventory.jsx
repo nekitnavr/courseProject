@@ -71,11 +71,12 @@ function Inventory() {
 
     const [accessLevel, setAccesLevel] = useState(0)
     const updateAccessLevel = ()=>{
-        if (user?.role == 'ADMIN') {
+        if (!user) return
+        if (user.role == 'ADMIN') {
             setAccesLevel(3)
-        } else if (user?.id && user?.id == inventory?.creatorId){
+        } else if (user.id == inventory?.creatorId){
             setAccesLevel(2)
-        } else if (inventory?.accessType == 'PUBLIC' || inventory?.usersWithAccess.find(el=>el.id == user?.id)){
+        } else if (inventory?.accessType == 'PUBLIC' || inventory?.usersWithAccess.find(el=>el.id == user.id)){
             setAccesLevel(1)
         }
     }
