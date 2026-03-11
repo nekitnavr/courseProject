@@ -200,6 +200,13 @@ router.get('/api/tagCloud', async (req, res)=>{
                     _count: 'desc'
                 }
             },
+            include: {
+                _count: {
+                    select: {
+                        inventories: true
+                    }
+                }
+            },
             take: 10
         })
         

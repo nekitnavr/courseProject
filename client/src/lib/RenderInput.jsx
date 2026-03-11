@@ -43,6 +43,8 @@ export default function RenderInput({field, register, item}){
                         placeholder='Enter field value'
                         {...register(fieldName)}
                         defaultValue={defaultValue}
+                        min={-2147483648}
+                        max={2147483647}
                     />
                 )
         }}

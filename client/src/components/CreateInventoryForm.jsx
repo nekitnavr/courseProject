@@ -8,7 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useAlert } from '../hooks/useAlert';
 import Markdown from 'react-markdown'
 
-function CreateInventoryForm({register, handleSubmit, setValue, formState, setTitleText, setTags, reset, watch}) {
+function CreateInventoryForm({register, handleSubmit, setValue, setTitleText, setTags, reset, watch}) {
     const {user} = useAuth()
     const [categories, setCategories] = useState([])
     const typeaheadRef = useRef()
@@ -25,8 +25,7 @@ function CreateInventoryForm({register, handleSubmit, setValue, formState, setTi
     },[])
 
     async function onSubmit(data) {
-        console.log(data);
-        if(!user) return console.log(`No user so can't create`)
+        if(!user) return showAlert('User not authenticated', 'warning')
         axiosInstance.post('/api/createInventory', {...data, creatorId: user.id}).then(res=>{
             reset()
             typeaheadRef.current.clear()

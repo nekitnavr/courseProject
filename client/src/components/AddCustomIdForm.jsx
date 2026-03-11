@@ -6,7 +6,7 @@ import axiosInstance from '../api/axiosConfig';
 import { exampleID } from '../lib/helpers';
 import { useAlert } from '../hooks/useAlert'
 
-function AddCustomIdForm({ setValue: setOuterFormValue, customId, inventoryId }) {
+function AddCustomIdForm({ setValue: setOuterFormValue, customId, inventoryId, formState: outerFormState }) {
     const { control, register, watch, reset, setValue, handleSubmit } = useForm({
         defaultValues: {
             idElements: customId?.idElements || [],
@@ -18,6 +18,10 @@ function AddCustomIdForm({ setValue: setOuterFormValue, customId, inventoryId })
 
     const idElements = watch('idElements')
     const form = watch()
+
+    useEffect(()=>{
+        reset()
+    },[outerFormState?.isSubmitSuccessful])
 
     useEffect(() => {
         if (setOuterFormValue) setOuterFormValue('customItemId', form)

@@ -31,10 +31,11 @@ function AddFieldsForm(formMethods) {
     }
 
     useEffect(()=>{
-        if (formState.isSubmitSuccessful) {
-            reset()
+        reset()
+        if (formMethods.formState.isSubmitSuccessful) {
+            setFields([])
         }
-    },[formState])
+    },[formState.isSubmitSuccessful, formMethods.formState.isSubmitSuccessful])
 
     return ( <>
     {fields?.length > 0 && <FieldsTable fields={fields} isView={true}></FieldsTable>}

@@ -9,6 +9,7 @@ import { Trash3 } from 'react-bootstrap-icons';
 import { useAuth } from '../hooks/useAuth';
 import UsersTable from './UsersTable';
 import {useAlert} from '../hooks/useAlert'
+import FormSelect from 'react-bootstrap/esm/FormSelect';
 
 function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
     const {register, handleSubmit, setValue, watch, reset, formState:{isSubmitSuccessful}, setError, clearErrors} = useForm()
@@ -16,7 +17,6 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
     const {toggleSelectAll, toggleRow, selectAll, isSelected, getSelectedRows, deselectAll} = rowSelect
     const [isLoading, setIsLoading] = useState(false)
     const [options, setOptions] = useState([])
-    const {user} = useAuth()
     const typeaheadRef = createRef()
     const {showAlert} = useAlert()
 
@@ -72,9 +72,30 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
             setError('No user')
         }
     }
+
+    const [sortedUsers, setSortedUsers] = useState([])
+    const [sortValue, setSortValue] = useState('')
+    const handleSelect = (e)=>{setSortValue(e.target.value)}
+
+    useEffect(()=>{
+        sortUsers()
+    }, [usersWithAccess, sortValue])
+
+    const sortUsers = ()=>{
+        if (!usersWithAccess) return
+        switch(sortValue){
+            case 'name':
+                setSortedUsers([...usersWithAccess].sort((a,b)=>a.name.localeCompare(b.name)))
+                break
+            case 'email':
+                setSortedUsers([...usersWithAccess].sort((a,b)=>a.email.localeCompare(b.email)))
+                break
+            default:
+                setSortedUsers([...usersWithAccess])
+        }
+    }
     
     return ( <>
-        
         <div style={{maxWidth:'600px'}}>
             <Form className='mb-3 text-start' onSubmit={handleSubmit(onSubmit)}>
                 <Form.Group>
@@ -103,11 +124,16 @@ function InventoryAccess({usersWithAccess, inventoryId, fillUsersWithAccess}) {
                 </Form.Group>
                 <Button type='submit' className='mb-3'>Add access</Button>
             </Form>
-            {usersWithAccess?.length > 0 && <div className="d-flex gap-1 flex-wrap my-3">
+            {usersWithAccess?.length > 0 && <div className="d-flex gap-2 flex-wrap my-3">
                 <Button onClick={handleRemoveAccess} variant="danger"><Trash3 size={23} className="pb-1"></Trash3></Button>
+                <FormSelect style={{maxWidth: '200px'}} onChange={handleSelect} value={sortValue}>
+                    <option value="">Sort by</option>
+                    <option value="name">Name</option>
+                    <option value="email">Email</option>
+                </FormSelect>
             </div>}
             <UsersTable 
-                users={usersWithAccess}
+                users={sortedUsers}
                 rowSelect={rowSelect}
                 headers={['Name', 'Email']}
                 fields={['name', 'email']}
