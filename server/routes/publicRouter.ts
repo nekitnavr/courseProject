@@ -4,6 +4,7 @@ import generateId from '../lib/generateId.js'
 import { FieldModel } from '../generated/prisma/models.js'
 import { Prisma } from '../generated/prisma/client.js'
 import { aggregationKeys, typeMap } from '../lib/helpers.js'
+import { isAuthenticated } from '../middleware/isAuthenticated.js'
 
 const router = express.Router()
 
@@ -329,7 +330,7 @@ router.get('/api/user/inventories', async (req,res)=>{
         res.send(err)
     }
 })
-router.post('/api/inventory/createItem', async (req, res)=>{
+router.post('/api/inventory/createItem', isAuthenticated, async (req, res)=>{
     const {fieldValues, inventoryId, onConflictCustomId} = req.body
     if(!inventoryId) return res.status(400).send('Inventory ID required')
     
@@ -406,7 +407,7 @@ router.post('/api/inventory/createItem', async (req, res)=>{
         res.send(error)
     }
 })
-router.patch('/api/inventory/editItem', async (req,res)=>{
+router.patch('/api/inventory/editItem', isAuthenticated, async (req,res)=>{
     try {
         const {fieldValues, itemId, inventoryId} = req.body
         if (!inventoryId) return res.status(400).send('Inventory ID required')
@@ -446,7 +447,7 @@ router.patch('/api/inventory/editItem', async (req,res)=>{
         res.send(error)
     }
 })
-router.delete('/api/inventory/deleteItems', async (req,res)=>{
+router.delete('/api/inventory/deleteItems', isAuthenticated, async (req,res)=>{
     let selectedItems = req.query['selectedItems[]'] as string[]
     if (!Array.isArray(selectedItems)) selectedItems = [selectedItems]
 
