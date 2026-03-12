@@ -13,6 +13,7 @@ import AddFieldsInventory from "./AddFieldsInventory";
 import EditInventorySettingsForm from "./EditInventorySettingsForm";
 import InventoryAccess from "./InventoryAccess";
 import InventoryDescription from "./InventoryDescription";
+import Statistics from "./Statistics";
 
 function Inventory() {
     const {id} = useParams()
@@ -134,7 +135,9 @@ function Inventory() {
         <Tab eventKey="description" title="Description">
             <InventoryDescription description={inventory?.description}></InventoryDescription>
         </Tab>
-        <Tab eventKey="stats" title="Statistics"></Tab>
+        <Tab eventKey="stats" title="Statistics" mountOnEnter>
+            <Statistics inventoryId={inventory?.id}/>
+        </Tab>
     </Tabs>
     </> );
 }

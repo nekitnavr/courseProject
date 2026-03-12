@@ -3,7 +3,7 @@ import {prisma} from '../lib/prisma.js'
 import generateId from '../lib/generateId.js'
 import { FieldModel } from '../generated/prisma/models.js'
 import { Prisma } from '../generated/prisma/client.js'
-import { typeMap } from '../lib/helpers.js'
+import { aggregationKeys, typeMap } from '../lib/helpers.js'
 
 const router = express.Router()
 
@@ -134,6 +134,89 @@ router.get('/api/inventory', async (req,res)=>{
         console.log(err)
         res.send(err)
     }
+})
+router.get('/api/inventory/statistics', async (req, res)=>{
+    const inventoryId = req.query.inventoryId as string
+
+    const fields = await prisma.field.findMany({
+        where: {
+            inventoryId: inventoryId,
+            display: true
+        },
+        select: {
+            id: true,
+            title: true,
+            fieldType: true,
+            slotNumber: true
+        }
+    })
+
+    const stats:any = {
+        'itemCount':await prisma.item.count({where: {inventoryId: inventoryId}}),
+        fields: []
+    }
+    
+    for (const field of fields) {
+        const inDbName = typeMap[field.fieldType] + field.slotNumber
+        const stat:any = {
+            field: field,
+            value: {}
+        }
+        
+        switch(field.fieldType){
+            case "NUMERIC":
+                const aggregation = await prisma.item.aggregate({
+                    where:{
+                        inventoryId: inventoryId
+                    },
+                    _avg: {
+                        [inDbName]: true
+                    },
+                    _min: {
+                        [inDbName]: true
+                    },
+                    _max: {
+                        [inDbName]: true
+                    }
+                })
+                
+                for (const key of aggregationKeys) {
+                    stat.value[key] = aggregation[key][inDbName] 
+                }
+
+                break
+            case "MULTI_LINE":
+            case "SINGLE_LINE":
+                // let items:any = await prisma.item.findMany({
+                //     where:{
+                //         inventoryId: inventoryId,
+                //         [inDbName]: { not: null }
+                //     },
+                //     select: {
+                //         [inDbName]: true
+                //     }
+                // })
+                // items = items
+                //     .map((el: any)=>el[inDbName])
+                //     .map((el:string)=>el.split(''))
+                //     .flat()
+                //     .filter((el:string)=>el!=' ')
+                //     .sort()
+                // let count:any = {}
+                // items.forEach((el:string) => {
+                //     if (!count[el]) {
+                //         count[el] = 0
+                //     }else{
+                //         count[el] += 1
+                //     }
+                // });
+                // console.log(count);
+                break
+        }
+        stats.fields.push(stat)
+    }
+
+    res.send(stats)
 })
 router.get('/api/inventories', async (req,res)=>{
     try {
