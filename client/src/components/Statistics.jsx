@@ -32,7 +32,7 @@ function Statistics({inventoryId}) {
                 stat = <>
                     <p>Min: {el.value['_min']}</p>
                     <p>Max: {el.value['_max']}</p>
-                    <p>Avg: {el.value['_avg'].toFixed(2)}</p>
+                    <p>Avg: {el.value['_avg']?.toFixed(2)}</p>
                 </>
                 break;
         
@@ -55,7 +55,7 @@ function Statistics({inventoryId}) {
             </div>
             {stats ? <>
                 <h3>Item count: {stats?.itemCount}</h3>
-                {stats?.fields.map(el=>renderStats(el))}
+                {stats?.fields?.map(el=>renderStats(el))}
             </> : <Spinner/>}
         </div>
     </> );

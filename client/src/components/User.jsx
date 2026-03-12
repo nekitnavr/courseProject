@@ -67,7 +67,7 @@ function User() {
                     {accessibleInventories?.length == 0 && <h2 className='mt-5'>User hasn't been given access by anybody</h2>}
                 </Tab>
             }
-            {currentUser?.role == "ADMIN" && 
+            {(currentUser?.role == "ADMIN" && idFromParams == currentUser?.id) && 
                 <Tab eventKey="adminPage" title="Admin page">
                     <AdminPage></AdminPage>
                 </Tab>
