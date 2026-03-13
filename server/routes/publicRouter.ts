@@ -126,7 +126,8 @@ router.get('/api/inventory', async (req,res)=>{
                         email: true,
                         name: true
                     }
-                }
+                },
+                category: true
             },
         })
 
