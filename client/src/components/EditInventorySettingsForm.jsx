@@ -32,6 +32,12 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
         fillCategories()
     },[])
 
+    useEffect(() => {
+        if (categories?.length > 0 && inventory?.categoryId) {
+            setValue('category', inventory.categoryId);
+        }
+    }, [categories, inventory]);
+
     useEffect(()=>{
         const initialTags = inventory?.tags?.map(el=>el.tagName) || []
         setSelectedTags(initialTags)
@@ -94,7 +100,7 @@ function EditInventorySettingsForm({inventory, fillInventory}) {
                     {...register('category', {required:true})} 
                     required
                 >
-                    <option>Choose category</option>
+                    <option value="">Choose category</option>
                     {categories.map(el=>(
                         <option value={el.id} key={el.id}>{el.categoryName}</option>
                     ))}
